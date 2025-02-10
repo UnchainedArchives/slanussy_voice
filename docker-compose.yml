@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  tts-service:
+    image: slanussy/tts-service:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    runtime: nvidia
+    gpus: all
+    restart: unless-stopped
+    user: "appuser"
+    ports:
+      - "5001:5001"
+    volumes:
+      - model_volume:/app/models
+      - output_volume:/app/output
+      - log_volume:/app/logs
+      - bark_cache:/home/appuser/.cache/suno
+    environment:
+      - DEVICE=cuda
+      - WORKSPACE=/app/output
+      - LOG_LEVEL=INFO
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 16G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+volumes:
+  model_volume:
+    driver_opts:
+      type: none
+      device: /workspace/models
+      o: bind
+  output_volume:
+    driver_opts:
+      type: none
+      device: /workspace/output
+      o: bind
+  log_volume:
+    driver_opts:
+      type: none
+      device: /workspace/logs
+      o: bind

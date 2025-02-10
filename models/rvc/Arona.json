@@ -1,0 +1,147 @@
+{
+  "title": "Arona (Blue Archive) (RVC v2) 600 Epoch",
+  "author": {
+    "name": "lorddavis778",
+    "discordUserId": "690488110051622912"
+  },
+  "md5": "bab1c4e48b776167da05cb2a585b1b30",
+  "uploadedAt": "2023-06-18T05:01:50.187Z",
+  "weightsLink": "https://www.weights.gg/models/clm72xlq211mucctc558c67md",
+  "id": "clm72xlq211mucctc558c67md",
+  "type": "v1",
+  "tags": [
+    "Anime Character",
+    "Fictional Character",
+    "RVC v2"
+  ],
+  "description": "<https://huggingface.co/LordDavis778/BlueArchivevoicemodels/resolve/main/Arona.zip>",
+  "samples": [],
+  "files": [
+    {
+      "name": "model.index",
+      "size": 6048691,
+      "md5": "22455b94d204f61eb5f61bc0e06ae0cb"
+    },
+    {
+      "name": "model.pth",
+      "size": 54996633,
+      "md5": "bab1c4e48b776167da05cb2a585b1b30"
+    }
+  ],
+  "torchMetadata": {
+    "config": {
+      "spec_channels": 1025,
+      "segment_size": 32,
+      "inter_channels": 192,
+      "hidden_channels": 192,
+      "filter_channels": 768,
+      "n_heads": 2,
+      "n_layers": 6,
+      "kernel_size": 3,
+      "p_dropout": 0,
+      "resblock": "1",
+      "resblock_kernel_sizes": [
+        3,
+        7,
+        11
+      ],
+      "resblock_dilation_sizes": [
+        [
+          1,
+          3,
+          5
+        ],
+        [
+          1,
+          3,
+          5
+        ],
+        [
+          1,
+          3,
+          5
+        ]
+      ],
+      "upsample_rates": [
+        10,
+        10,
+        2,
+        2
+      ],
+      "upsample_initial_channel": 512,
+      "upsample_kernel_sizes": [
+        16,
+        16,
+        4,
+        4
+      ],
+      "emb_channels": null,
+      "spk_embed_dim": 109,
+      "gin_channels": 256,
+      "sr": 40000
+    },
+    "f0": 1,
+    "version": "v1",
+    "extra_info": {
+      "config": [
+        1025,
+        32,
+        192,
+        192,
+        768,
+        2,
+        6,
+        3,
+        0,
+        "1",
+        [
+          3,
+          7,
+          11
+        ],
+        [
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            1,
+            3,
+            5
+          ],
+          [
+            1,
+            3,
+            5
+          ]
+        ],
+        [
+          10,
+          10,
+          2,
+          2
+        ],
+        512,
+        [
+          16,
+          16,
+          4,
+          4
+        ],
+        109,
+        256,
+        40000
+      ],
+      "info": "600epoch",
+      "sr": "40k",
+      "f0": 1,
+      "version": "v1"
+    }
+  },
+  "url": "https://huggingface.co/LordDavis778/BlueArchivevoicemodels/resolve/main/Arona.zip",
+  "originalFileList": [
+    "Arona/Arona.pth",
+    "Arona/added_IVF146_Flat_nprobe_1_v1.index"
+  ]
+}
