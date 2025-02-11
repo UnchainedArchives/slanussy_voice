@@ -98,7 +98,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     webrtcvad
 
 # Preload models
-RUN /opt/bark_env/bin/python -c "from bark.generation import preload_models; preload_models()"
+RUN /opt/bark_env/bin/python -c "from bark.generation import preload_models; preload_models(use_gpu=False)"
 
 # Stage 4: Final image
 FROM base
