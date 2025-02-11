@@ -34,9 +34,17 @@ RUN git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-We
 
 RUN /opt/rvc_env/bin/pip install hydra-core==1.1.0
 
+# Clean cache after hydra install
+RUN /opt/rvc_env/bin/pip cache purge && \
+    rm -rf /root/.cache/pip /tmp/*
+
 # Install RVC requirements
 RUN --mount=type=cache,target=/root/.cache/pip \
     /opt/rvc_env/bin/pip install --no-cache-dir -r /app/rvc/requirements.txt
+
+# Clean cache after requirements
+RUN /opt/rvc_env/bin/pip cache purge && \
+    rm -rf /root/.cache/pip /tmp/*
 
 # Install Torch
 RUN --mount=type=cache,target=/root/.cache/pip \
@@ -44,6 +52,10 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     torch==2.0.1+cu118 \
     torchaudio==2.0.2+cu118 \
     -f https://download.pytorch.org/whl/cu118/torch_stable.html
+
+# Clean cache after torch
+RUN /opt/rvc_env/bin/pip cache purge && \
+    rm -rf /root/.cache/pip /tmp/*
 
 # Download models
 RUN apt-get update && apt-get install -y curl && \
@@ -57,13 +69,23 @@ RUN apt-get update && apt-get install -y curl && \
 # Stage 3: Bark installation
 FROM base AS bark
 
-# Install Bark dependencies
+# Install core dependencies
 RUN --mount=type=cache,target=/root/.cache/pip \
     /opt/bark_env/bin/pip install --upgrade pip uvicorn && \
     /opt/bark_env/bin/pip install --no-cache-dir \
     git+https://github.com/suno-ai/bark.git \
     torch==2.1.0+cu121 \
     torchaudio==2.1.0+cu121 \
+    -f https://download.pytorch.org/whl/cu121/torch_stable.html
+
+
+# Clean cache between steps
+RUN /opt/bark_env/bin/pip cache purge && \
+    rm -rf /tmp/* /root/.cache/pip
+
+# Install secondary dependencies
+RUN --mount=type=cache,target=/root/.cache/pip \
+    /opt/bark_env/bin/pip install --no-cache-dir \
     numpy==1.23.5 \
     noisereduce \
     soundfile \
@@ -73,8 +95,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     encodec==0.1.1 \
     sentencepiece \
     resampy \
-    webrtcvad \
-    -f https://download.pytorch.org/whl/cu121/torch_stable.html
+    webrtcvad
 
 # Preload models
 RUN /opt/bark_env/bin/python -c "from bark.generation import preload_models; preload_models()"
