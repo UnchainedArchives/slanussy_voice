@@ -12,6 +12,8 @@ RUN apt-get update && \
     wget \
     libsndfile1 \
     ffmpeg \
+    nano \
+    sudo \
     && ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime \
     && dpkg-reconfigure -f noninteractive tzdata \
     && add-apt-repository -y ppa:deadsnakes/ppa \
@@ -20,6 +22,7 @@ RUN apt-get update && \
     python3.9 \
     python3.9-venv \
     python3.9-dev \
+    python3.9-distutils \
     && rm -rf /var/lib/apt/lists/*
 
 # Virtual envs
@@ -28,7 +31,7 @@ RUN python3.9 -m venv /opt/rvc_env --prompt rvc_env && \
 
 # Upgrade pip
 RUN /opt/rvc_env/bin/pip install pip==23.3.1 && \
-    /opt/bark_env/bin/pip install --upgrade pip
+    /opt/bark_env/bin/pip install --upgrade pip uvicorn
 
 # RVC setup
 RUN git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git /app/rvc && \
@@ -63,7 +66,9 @@ RUN /opt/bark_env/bin/pip install --no-cache-dir \
     sentencepiece \
     resampy \
     webrtcvad \
-    -f https://download.pytorch.org/whl/cu121/torch_stable.html
+    -f https://download.pytorch.org/whl/cu121/torch_stable.html && \
+    /opt/bark_env/bin/pip cache purge && \
+    rm -rf /root/.cache/pip
 
 RUN /opt/bark_env/bin/python -c "from bark.generation import preload_models; preload_models()"
 
@@ -71,10 +76,11 @@ COPY app /app
 
 # Finalize
 RUN apt clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.cache && \
     useradd -m appuser && \
     chown -R appuser:appuser /app && \
-    mkdir -p /app/output /app/logs
+    mkdir -p /app/output /app/logs && \
+    echo "appuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 USER appuser
 WORKDIR /app
