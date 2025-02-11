@@ -30,8 +30,9 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 # Clone and modify RVC
 RUN git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI.git /app/rvc && \
-    sed -i 's/fairseq==0.12.2/fairseq @ git+https:\/\/github.com\/facebookresearch\/fairseq.git@main/' /app/rvc/requirements.txt && \
     sed -i '/hydra-core/d' /app/rvc/requirements.txt
+
+RUN /opt/rvc_env/bin/pip install hydra-core==1.1.0
 
 # Install RVC requirements
 RUN --mount=type=cache,target=/root/.cache/pip \
