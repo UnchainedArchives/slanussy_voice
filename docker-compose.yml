@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   tts-service:
-    image: slanussy/ai_stuff:voice
+    image: slanussy/ai_stuff:barktts
     build: # Build from local Dockerfile
       context: .
       dockerfile: Dockerfile
