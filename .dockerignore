@@ -1,39 +1,65 @@
-# Ignore Python cache files
-__pycache__/
-*.py[cod]
-
-# Ignore IDE and editor files
-.idea/
-.vscode/
-*.swp
-*~
-*.swo
-*.bak
-
-# Ignore logs and temporary files
-logs/
+# Development artifacts
+**/*~
+**/*.bak
+**/*.swp
 *.log
 *.tmp
-*.temp
 
-# Ignore build artifacts
-build/
-dist/
+# Version control
+.git/
+.gitignore
+.gitmodules
+.github/
+
+# IDE configurations
+.vscode/
+.idea/
+*.code-workspace
+
+# Documentation
+docs/
+*.md
+*.txt
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyproj
+*.pyz
+*.pkl
 *.egg-info/
+dist/
+build/
+.ipynb_checkpoints/
 
-# Ignore virtual environments
-venv/
-env/
+# Environment files
+.env
+.env.local
+secrets/
+config*.local.json
+
+# Virtual environments
+**/venv/
+**/env/
+**/ENV/
 /opt/rvc_env/
 /opt/bark_env/
 
-# Ignore data files and outputs
-data/
-output/
-/workspace/models/
-/workspace/output/
-/workspace/logs/
-/workspace/cache/
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local development
+.local/
+.cache/
+.ropeproject/
+.history/
+
+# OS metadata
+.DS_Store
+Thumbs.db
 
 # Ignore testing and documentation files
 tests/
@@ -41,50 +67,7 @@ docs/
 *.md
 *.rst
 
-# Ignore OS-specific files
-.DS_Store
-Thumbs.db
-
-# Ignore version control files
-.git/
-.gitignore
-.gitmodules
-
 # Ignore any other specific files or directories
-*.pyc
-*.pyo
-*.pyd
-*.so
-*.dll
-*.dylib
-*.exe
-*.sh
-*.bat
-*.zip
-*.tar.gz
-*.gz
-*.bz2
-*.xz
-*.rar
-*.iso
-*.img
-*.lock
-*.pid
-*.sock
-*.jar
-*.war
-*.ear
-*.class
-*.jar
-*.war
-*.ear
-*.class
-*.iml
-*.sublime-project
-*.sublime-workspace
-*.vscode/
-*.idea/
-*.DS_Store
 *.pyc
 *.pyo
 *.pyd

@@ -58,13 +58,15 @@ RUN /opt/rvc_env/bin/pip cache purge && \
     rm -rf /root/.cache/pip /tmp/*
 
 # Download models
-RUN apt-get update && apt-get install -y curl && \
+RUN apt-get update && apt-get install -y --no-install-recommends curl && \
     mkdir -p /app/models/rvc && \
     curl -A "Mozilla/5.0" -L -o /app/models/rvc/model.pth \
     https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/pretrained_v2/D40k/G_0.pth && \
     curl -A "Mozilla/5.0" -L -o /app/models/rvc/model.index \
     https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/pretrained_v2/D40k/f0D40k.index && \
-    apt-get purge -y curl && apt-get autoremove -y
+    apt-get purge -y curl && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # Stage 3: Bark installation
 FROM base AS bark
@@ -80,6 +82,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     torch==2.1.0+cu121 \
     torchaudio==2.1.0+cu121 \
     -f https://download.pytorch.org/whl/cu121/torch_stable.html
+
 
 # Clean cache between steps
 RUN /opt/bark_env/bin/pip cache purge && \
@@ -99,8 +102,38 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     resampy \
     webrtcvad
 
-# Preload models
-RUN /opt/bark_env/bin/python -c "from bark.generation import preload_models; preload_models(use_gpu=False)"
+# Disable GPU during build to avoid driver errors
+ENV CUDA_VISIBLE_DEVICES=-1
+
+# Preload models incrementally with CPU
+RUN /opt/bark_env/bin/python - <<EOF
+import torch
+from bark.generation import load_model, models
+
+# Move all models to CPU after loading
+for model_type in ["text", "coarse", "fine", "codec"]:
+    print(f"Loading model: {model_type}")
+    model = load_model(model_type)
+
+    # Handle different model types
+    if model_type == "codec":
+        # Codec model is a dictionary
+        for key in model:
+            if isinstance(model[key], torch.nn.Module):
+                model[key].to("cpu")
+    elif isinstance(model, tuple):
+        # Handle tuple models
+        for m in model:
+            m.to("cpu")
+    elif isinstance(model, torch.nn.Module):
+        # Single model
+        model.to("cpu")
+    else:
+        print(f"Unexpected model type for {model_type}: {type(model)}")
+
+    models[model_type] = model
+    print(f"Model {model_type} loaded and moved to CPU.")
+EOF
 
 # Stage 4: Final image
 FROM base
@@ -129,6 +162,9 @@ RUN apt-get clean && \
     useradd -m appuser && \
     chown -R appuser:appuser /app /opt/rvc_env /opt/bark_env && \
     mkdir -p /app/output /app/logs
+
+# Enable GPU usage at runtime by default
+ENV CUDA_VISIBLE_DEVICES=0
 
 USER appuser
 WORKDIR /app
