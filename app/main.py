@@ -210,7 +210,11 @@ GENERATION_PARAMS = {
 }
 
 EMOTION_CONFIG = {
-    # ... (same as original) ...
+    "neutral": {},
+    "happy": {"pitch_shift": 2},
+    "sad": {"pitch_shift": -2},
+    "angry": {"speed_factor": 1.2},
+    "excited": {"speed_factor": 0.8}
 }
 
 # Initialize components

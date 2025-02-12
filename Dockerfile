@@ -1,6 +1,7 @@
 # Stage 1: Base environment
 FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04 AS base
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHON_VERSION=3.9
 
 # Install system dependencies
 RUN --mount=type=cache,target=/var/cache/apt \
@@ -13,16 +14,15 @@ RUN --mount=type=cache,target=/var/cache/apt \
     add-apt-repository -y ppa:deadsnakes/ppa && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    python3.9 python3.9-venv python3.9-dev python3.9-distutils && \
+    python${PYTHON_VERSION} python${PYTHON_VERSION}-venv python${PYTHON_VERSION}-dev python${PYTHON_VERSION}-distutils && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Create virtual environments
-RUN python3.9 -m venv /opt/rvc_env --prompt rvc_env && \
-    python3.9 -m venv /opt/bark_env --prompt bark_env
-
 # Stage 2: RVC installation
 FROM base AS rvc
+
+# Create RVC virtual environment
+RUN python${PYTHON_VERSION} -m venv /opt/rvc_env --prompt rvc_env
 
 # Install RVC dependencies
 RUN --mount=type=cache,target=/root/.cache/pip \
@@ -69,6 +69,9 @@ RUN apt-get update && apt-get install -y curl && \
 # Stage 3: Bark installation
 FROM base AS bark
 
+# Create Bark virtual environment
+RUN python${PYTHON_VERSION} -m venv /opt/bark_env --prompt bark_env
+
 # Install core dependencies
 RUN --mount=type=cache,target=/root/.cache/pip \
     /opt/bark_env/bin/pip install --upgrade pip uvicorn && \
@@ -77,7 +80,6 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     torch==2.1.0+cu121 \
     torchaudio==2.1.0+cu121 \
     -f https://download.pytorch.org/whl/cu121/torch_stable.html
-
 
 # Clean cache between steps
 RUN /opt/bark_env/bin/pip cache purge && \
@@ -111,6 +113,7 @@ RUN apt-get purge -y build-essential g++ git wget \
 # Copy components
 COPY --from=rvc /app/rvc /app/rvc
 COPY --from=rvc /app/models /app/models
+COPY --from=rvc /opt/rvc_env /opt/rvc_env
 COPY --from=bark /opt/bark_env /opt/bark_env
 
 # Clean Python caches
@@ -124,9 +127,8 @@ COPY app /app
 RUN apt-get clean && \
     rm -rf /tmp/* /var/tmp/* /root/.cache && \
     useradd -m appuser && \
-    chown -R appuser:appuser /app && \
-    mkdir -p /app/output /app/logs && \
-    echo "appuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+    chown -R appuser:appuser /app /opt/rvc_env /opt/bark_env && \
+    mkdir -p /app/output /app/logs
 
 USER appuser
 WORKDIR /app

@@ -2,7 +2,6 @@ version: '3.8'
 
 services:
   tts-service:
-    image: slanussy/ai_stuff:barkpipeline
     build: # Build from local Dockerfile
       context: .
       dockerfile: Dockerfile
@@ -52,4 +51,9 @@ volumes:
     driver_opts:
       type: none
       device: /workspace/logs
+      o: bind
+  bark_cache:
+    driver_opts:
+      type: none
+      device: /workspace/cache/suno
       o: bind

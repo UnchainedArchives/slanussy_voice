@@ -1,0 +1,114 @@
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+
+# Ignore IDE and editor files
+.idea/
+.vscode/
+*.swp
+*~
+*.swo
+*.bak
+
+# Ignore logs and temporary files
+logs/
+*.log
+*.tmp
+*.temp
+
+# Ignore build artifacts
+build/
+dist/
+*.egg-info/
+
+# Ignore virtual environments
+venv/
+env/
+/opt/rvc_env/
+/opt/bark_env/
+
+# Ignore data files and outputs
+data/
+output/
+/workspace/models/
+/workspace/output/
+/workspace/logs/
+/workspace/cache/
+
+# Ignore testing and documentation files
+tests/
+docs/
+*.md
+*.rst
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore version control files
+.git/
+.gitignore
+.gitmodules
+
+# Ignore any other specific files or directories
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.dll
+*.dylib
+*.exe
+*.sh
+*.bat
+*.zip
+*.tar.gz
+*.gz
+*.bz2
+*.xz
+*.rar
+*.iso
+*.img
+*.lock
+*.pid
+*.sock
+*.jar
+*.war
+*.ear
+*.class
+*.jar
+*.war
+*.ear
+*.class
+*.iml
+*.sublime-project
+*.sublime-workspace
+*.vscode/
+*.idea/
+*.DS_Store
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.dll
+*.dylib
+*.exe
+*.sh
+*.bat
+*.zip
+*.tar.gz
+*.gz
+*.bz2
+*.xz
+*.rar
+*.iso
+*.img
+*.lock
+*.pid
+*.sock
+*.jar
+*.war
+*.ear
+*.class
+*.iml
+*.sublime-project
+*.sublime-workspace
